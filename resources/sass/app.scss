@@ -1,0 +1,97 @@
+// Сначала наши переменные, потом Bootstrap (чтобы он их подхватил)
+@import "variables";
+@import "bootstrap/scss/bootstrap";
+
+// Иконки FontAwesome
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/solid";
+@import "@fortawesome/fontawesome-free/scss/regular";
+
+// ---------- Шапка ----------
+.site-header {
+  border-radius: 8px;
+
+  .logo {
+    font-size: 1.8rem;
+  }
+  .site-title {
+    font-weight: bold;
+    white-space: normal;
+  }
+}
+
+// ---------- Карточки объектов ----------
+.object-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  // Картинка с подписью поверх неё
+  .labeledimg {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+
+    img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+
+    .label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 8px;
+      background-color: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      font-size: 0.8rem;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Каждой карточке — свой цвет из ЛР1 (5 цветов повторяются по кругу)
+@each $num, $color in $card-colors {
+  .row > div:nth-child(5n + #{$num}) .object-card {
+    background-color: $color;
+  }
+}
+
+// Слова с подсказками (Popover)
+.hint {
+  color: $primary;
+  border-bottom: 1px dashed $primary;
+  cursor: help;
+}
+
+// Картинка в модальном окне не выше 320px
+#objectModal .modal-body img {
+  max-height: 320px;
+  object-fit: cover;
+}
+
+// ---------- Формы ----------
+.image-preview {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #e2e8f0;
+}
+
+.details-text p:last-child {
+  margin-bottom: 0;
+}
+
+// ---------- Подвал ----------
+.footer {
+  border-top: 1px solid $border-gray;
+  font-weight: bold;
+}

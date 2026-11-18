@@ -1,0 +1,49 @@
+// Цветовая схема из лабораторной работы №1
+
+// Основные цвета страницы
+$page-bg:     #f0f4f8;  // фон страницы
+$text-color:  #334155;  // цвет текста
+$header-bg:   #1e293b;  // фон шапки
+$accent:      #3b82f6;  // цвет кнопок
+$border-gray: #cbd5e1;  // линия над подвалом
+
+// Цвета карточек (как в ЛР1 — каждая карточка своего оттенка, дальше по кругу)
+$card-colors: (
+  1: #d5d8e9,
+  2: #c9c7e2,
+  3: #c4badb,
+  4: #c3acd4,
+  5: #eee2f0
+);
+
+// Передаём наши цвета в Bootstrap
+$primary:   $accent;
+$dark:      $header-bg;
+$body-bg:   $page-bg;
+$body-color: $text-color;
+$font-family-sans-serif: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+$min-contrast-ratio: 3; // чтобы текст на синих кнопках был белым, как в ЛР1
+
+// Брейкпоинты: 5 стандартных + свой xxxl для широкого экрана
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+  xxxl: 1500px
+);
+
+// Максимальная ширина контейнера на каждом брейкпоинте
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px,
+  xxxl: 1460px
+);
+
+// Путь к шрифтам FontAwesome (их копирует Mix в public/fonts)
+$fa-font-path: "../fonts";
