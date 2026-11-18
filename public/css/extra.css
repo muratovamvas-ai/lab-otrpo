@@ -1,0 +1,11 @@
+/* Обычный CSS-файл: тоже собирается Mix (public/css/extra.css) */
+
+/* Плавное переключение текста в модальном окне */
+#objectModal .modal-body {
+  transition: opacity 0.15s ease;
+}
+
+#objectModal .modal-body.fading {
+  opacity: 0;
+}
+
