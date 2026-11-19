@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -14,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 class MessierObject extends Model
 {
     use SoftDeletes; // «удаление» только проставляет deleted_at
-      
+
     /** Допустимые типы объектов (выпадающий список в форме). */
     public const TYPES = [
         'Шаровое скопление',
@@ -34,11 +38,13 @@ class MessierObject extends Model
     /** Сколько слов должно быть в кратком описании. */
     public const DESCRIPTION_MIN_WORDS = 5;
     public const DESCRIPTION_MAX_WORDS = 40;
-    
+
     /** Сколько слов должно быть в подробном описании. */
     public const DETAILS_MIN_WORDS = 15;
     public const DETAILS_MAX_WORDS = 200;
+
     protected $fillable = [
+        'user_id',
         'constellation',
         'name',
         'type',
@@ -47,6 +53,63 @@ class MessierObject extends Model
         'catalogued_at',
         'image_path',
     ];
+
+    // ---------- События модели (Closures): права проверяются на уровне модели ----------
+
+    protected static function booted(): void
+    {
+        // Создание: автором становится текущий пользователь
+        static::creating(function (MessierObject $object) {
+            if (! $object->user_id && Auth::check()) {
+                $object->user_id = Auth::id();
+            }
+
+            if (! app()->runningInConsole() && ! Auth::check()) {
+                throw new AuthorizationException('Создавать объекты могут только авторизованные пользователи.');
+            }
+        });
+
+        // Изменение: только автор или администратор
+        static::updating(function (MessierObject $object) {
+            static::ensureAllowed('update-object', $object);
+        });
+
+        // Удаление: мягкое — автор или админ, полное (forceDelete) — только админ
+        static::deleting(function (MessierObject $object) {
+            static::ensureAllowed(
+                $object->isForceDeleting() ? 'force-delete-object' : 'delete-object',
+                $object
+            );
+        });
+
+        // Восстановление мягко удалённого объекта — только админ
+        static::restoring(function (MessierObject $object) {
+            static::ensureAllowed('restore-object', $object);
+        });
+    }
+
+    /**
+     * Проверка права через Gate. Из консоли (seeder, tinker, artisan) проверка
+     * не выполняется — там нет авторизованного пользователя.
+     */
+    protected static function ensureAllowed(string $ability, MessierObject $object): void
+    {
+        if (app()->runningInConsole()) {
+            return;
+        }
+
+        if (Gate::denies($ability, $object)) {
+            throw new AuthorizationException('Недостаточно прав для этого действия.');
+        }
+    }
+
+    // ---------- Связи ----------
+
+    /** Автор объекта. */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // ---------- Мутаторы / аксессоры (Attribute) ----------
 

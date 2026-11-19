@@ -2,14 +2,15 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\MessierObject;
 use Closure;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
  * Валидация на стороне контроллера (Validation Rules).
  * Один класс используется и для store, и для update.
+ * Права доступа проверяются не здесь, а в контроллере (Gates) и в модели (события).
  */
 class MessierObjectRequest extends FormRequest
 {

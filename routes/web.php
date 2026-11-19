@@ -1,13 +1,32 @@
 <?php
 
 use App\Http\Controllers\MessierObjectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
+// Маршруты аутентификации (/login, /register, /logout) добавляет Laravel Fortify.
 
 Route::redirect('/', '/objects');
 
-// Resource-маршруты: index, create, store, show, edit, update, destroy
-// Имена маршрутов: objects.index, objects.create, objects.store, ...
-// Параметр маршрута называем {object}, чтобы работало неявное связывание модели.
-Route::get('objects/check-name', [MessierObjectController::class, 'checkName'])->name('objects.check-name');
-Route::resource('objects', MessierObjectController::class)
-    ->parameters(['objects' => 'object']);
+// Всё приложение доступно только после входа
+Route::middleware('auth')->group(function () {
+
+    // Список пользователей и объекты конкретного пользователя (по username)
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/{user}/objects', [MessierObjectController::class, 'byUser'])->name('users.objects');
+
+    // AJAX-проверка обозначения (должен идти ДО resource, иначе «check-name» примется за {object})
+    Route::get('objects/check-name', [MessierObjectController::class, 'checkName'])->name('objects.check-name');
+
+    // Администратор: восстановление и полное удаление. withTrashed() — искать и среди мягко удалённых
+    Route::patch('objects/{object}/restore', [MessierObjectController::class, 'restore'])
+        ->withTrashed()->name('objects.restore');
+    Route::delete('objects/{object}/force', [MessierObjectController::class, 'forceDelete'])
+        ->withTrashed()->name('objects.force-delete');
+
+    // index, create, store, show, edit, update, destroy
+    // (show может открыть и удалённый объект — доступ к нему проверяется в контроллере)
+    Route::resource('objects', MessierObjectController::class)
+        ->parameters(['objects' => 'object'])
+        ->withTrashed(['show']);
+});
