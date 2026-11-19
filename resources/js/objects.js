@@ -38,7 +38,7 @@ $(function () {
     checkWords();
   });
 
-    // ---------- Проверка уникальности обозначения на лету (AJAX) ----------
+  // ---------- Проверка уникальности обозначения на лету (AJAX) ----------
   const $nameField = $('#name[data-check-url]');
   if ($nameField.length) {
     const field = $nameField[0];
@@ -107,13 +107,15 @@ $(function () {
     $('#imagePreview').attr('src', URL.createObjectURL(file));
   });
 
-  // ---------- Подтверждение удаления ----------
+  // ---------- Подтверждение удаления (мягкого и полного) ----------
   const deleteModalEl = document.getElementById('deleteModal');
   if (deleteModalEl) {
     const deleteModal = new Modal(deleteModalEl);
     $('.btn-delete').on('click', function () {
-      $('#deleteForm').attr('action', $(this).data('action'));
-      $('#deleteName').text($(this).data('name'));
+      const $btn = $(this);
+      $('#deleteForm').attr('action', $btn.data('action'));
+      $('#deleteModalTitle').text($btn.data('heading') || 'Удалить объект?');
+      $('#deleteMessage').text($btn.data('message') || `Объект «${$btn.data('name')}» будет удалён из каталога.`);
       deleteModal.show();
     });
   }
@@ -154,7 +156,11 @@ $(function () {
     removePopovers();
     $('#objectModalTitle').text($btn.data('title'));
     $('#modalShowLink').attr('href', $btn.attr('href'));
-    $('#modalEditLink').attr('href', $btn.data('edit-url'));
+
+    // кнопка «Изменить» есть только у тех, у кого есть право редактировать этот объект
+    const editUrl = $btn.data('edit-url');
+    $('#modalEditLink').attr('href', editUrl || '#').toggleClass('d-none', !editUrl);
+
     $body.addClass('fading');
 
     $.get($btn.attr('href'))

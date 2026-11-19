@@ -1,6 +1,6 @@
 {{--
   Одна форма для создания и редактирования.
-  Валидация: HTML5 (required, maxlength, type=date) + Bootstrap (was-validated, is-invalid)
+  Валидация: HTML5 (required, maxlength, pattern, type=date) + Bootstrap (was-validated, is-invalid)
   и на сервере (App\Http\Requests\MessierObjectRequest) — ошибки выводятся под полями.
 --}}
 <form action="{{ $action }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
@@ -12,7 +12,7 @@
   <div class="row g-3">
     <div class="col-md-6">
       <label for="constellation" class="form-label">Созвездие</label>
-        <input type="text" id="constellation" name="constellation" maxlength="100" required
+      <input type="text" id="constellation" name="constellation" maxlength="100" required
              pattern="[А-Яа-яЁё0-9\s\-]+"
              class="form-control @error('constellation') is-invalid @enderror"
              value="{{ old('constellation', $object->constellation) }}" placeholder="Например: Змееносец">
@@ -21,7 +21,7 @@
 
     <div class="col-md-3">
       <label for="name" class="form-label">Обозначение</label>
-            <input type="text" id="name" name="name" maxlength="20" required
+      <input type="text" id="name" name="name" maxlength="20" required
              data-check-url="{{ route('objects.check-name') }}"
              data-ignore-id="{{ $object->id }}"
              data-empty-message="Введите обозначение, например M10."

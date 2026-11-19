@@ -10,5 +10,13 @@
   <dt class="col-sm-4">Тип объекта</dt>
   <dd class="col-sm-8">{{ $object->type }}</dd>
   <dt class="col-sm-4">Внесён в каталог</dt>
-  <dd class="col-sm-8 mb-0">{{ $object->catalogued_at_text }}</dd>
+  <dd class="col-sm-8">{{ $object->catalogued_at_text }}</dd>
+  <dt class="col-sm-4">Добавил</dt>
+  <dd class="col-sm-8 mb-0">
+    @if ($object->user)
+      <a href="{{ route('users.objects', $object->user) }}">{{ $object->user->username }}</a>
+    @else
+      —
+    @endif
+  </dd>
 </dl>

@@ -3170,13 +3170,15 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview').attr('src', URL.createObjectURL(file));
   });
 
-  // ---------- Подтверждение удаления ----------
+  // ---------- Подтверждение удаления (мягкого и полного) ----------
   var deleteModalEl = document.getElementById('deleteModal');
   if (deleteModalEl) {
     var deleteModal = new bootstrap__WEBPACK_IMPORTED_MODULE_1__.Modal(deleteModalEl);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.btn-delete').on('click', function () {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteForm').attr('action', jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('action'));
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteName').text(jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('name'));
+      var $btn = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteForm').attr('action', $btn.data('action'));
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteModalTitle').text($btn.data('heading') || 'Удалить объект?');
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteMessage').text($btn.data('message') || "\u041E\u0431\u044A\u0435\u043A\u0442 \xAB".concat($btn.data('name'), "\xBB \u0431\u0443\u0434\u0435\u0442 \u0443\u0434\u0430\u043B\u0451\u043D \u0438\u0437 \u043A\u0430\u0442\u0430\u043B\u043E\u0433\u0430."));
       deleteModal.show();
     });
   }
@@ -3221,7 +3223,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
     removePopovers();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#objectModalTitle').text($btn.data('title'));
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#modalShowLink').attr('href', $btn.attr('href'));
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#modalEditLink').attr('href', $btn.data('edit-url'));
+
+    // кнопка «Изменить» есть только у тех, у кого есть право редактировать этот объект
+    var editUrl = $btn.data('edit-url');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#modalEditLink').attr('href', editUrl || '#').toggleClass('d-none', !editUrl);
     $body.addClass('fading');
     jquery__WEBPACK_IMPORTED_MODULE_0___default().get($btn.attr('href')).done(function (html) {
       $body.html(html).removeClass('fading');

@@ -21287,6 +21287,16 @@ readers do not read off random characters that represent icons */
   border-radius: 4px;
 }
 
+.is-trashed {
+  opacity: 0.55;
+}
+
+.object-card .labeledimg .label.label-deleted {
+  left: auto;
+  right: 10px;
+  background-color: #dc3545;
+}
+
 .row > div:nth-child(5n+1) .object-card {
   background-color: #d5d8e9;
 }

@@ -56,6 +56,17 @@
   }
 }
 
+// Мягко удалённый объект (его видит только администратор)
+.is-trashed {
+  opacity: 0.55;
+}
+
+.object-card .labeledimg .label.label-deleted {
+  left: auto;
+  right: 10px;
+  background-color: #dc3545;
+}
+
 // Каждой карточке — свой цвет из ЛР1 (5 цветов повторяются по кругу)
 @each $num, $color in $card-colors {
   .row > div:nth-child(5n + #{$num}) .object-card {
