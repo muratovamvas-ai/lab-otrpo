@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\MessierObject;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -35,12 +36,17 @@ class AppServiceProvider extends ServiceProvider
             return $user->isAdmin();
         });
 
-        // Удалить без возврата — только администратор
+        // Удалить без возврата - только администратор
         Gate::define('force-delete-object', function (User $user, ?MessierObject $object = null) {
             return $user->isAdmin();
         });
 
-        // Видеть удалённые объекты — только администратор
+        // Удалить комментарий может его автор или администратор
+        Gate::define('delete-comment', function (User $user, Comment $comment) {
+            return $user->isAdmin() || (int) $comment->user_id === (int) $user->id;
+        });
+
+        // Видеть удалённые объекты - только администратор
         Gate::define('view-trashed', function (User $user) {
             return $user->isAdmin();
         });

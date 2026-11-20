@@ -22,7 +22,7 @@ class FortifyServiceProvider extends ServiceProvider
         // Кто и как создаёт пользователя при регистрации
         Fortify::createUsersUsing(CreateNewUser::class);
 
-        // Fortify не содержит вёрстки — подключаем свои Bootstrap-шаблоны
+        // Fortify не содержит вёрстки - подключаем свои Bootstrap-шаблоны
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::registerView(fn () => view('auth.register'));
 

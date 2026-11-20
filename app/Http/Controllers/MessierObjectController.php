@@ -26,7 +26,7 @@ class MessierObjectController extends Controller
     /** Список объектов всех пользователей (администратор видит и удалённые). */
     public function index(): View
     {
-        $query = MessierObject::with('user')->orderBy('id');
+        $query = MessierObject::with('user')->withCount('comments')->orderBy('id');
 
         if (Gate::allows('view-trashed')) {
             $query->withTrashed();
@@ -37,13 +37,14 @@ class MessierObjectController extends Controller
             'heading' => 'Все объекты',
             'owner' => null,
             'users' => collect(),
+            'isFriend' => false,
         ]);
     }
 
     /** Список объектов одного пользователя: /users/{username}/objects */
-    public function byUser(User $user): View
+    public function byUser(Request $request, User $user): View
     {
-        $query = $user->messierObjects()->with('user')->orderBy('id');
+        $query = $user->messierObjects()->with('user')->withCount('comments')->orderBy('id');
 
         // полный список, включая удалённые, видит только администратор
         if (Gate::allows('view-trashed')) {
@@ -55,6 +56,9 @@ class MessierObjectController extends Controller
             'heading' => 'Объекты пользователя '.$user->username,
             'owner' => $user,
             'users' => User::orderBy('username')->get(['id', 'name', 'username']),
+            // дружите ли вы с владельцем списка (для кнопки «в друзья»)
+            'isFriend' => $user->isNot($request->user())
+                && $request->user()->isFriendWith($user),
         ]);
     }
 
@@ -108,13 +112,20 @@ class MessierObjectController extends Controller
             Gate::authorize('view-trashed');
         }
 
-        $object->load('user');
-
         if ($request->ajax()) {
+            $object->load('user');
+
             return view('objects._details', compact('object'));
         }
 
-        return view('objects.show', compact('object'));
+        // комментарии вместе с авторами; id друзей нужны для подсветки их комментариев
+        $object->load([
+            'user',
+            'comments' => fn ($query) => $query->oldest()->with('user'), // старые сверху, новые снизу
+        ]);
+        $friendIds = $request->user()->friends()->pluck('users.id')->all();
+
+        return view('objects.show', compact('object', 'friendIds'));
     }
 
     /** Форма редактирования: только автор или администратор. */
