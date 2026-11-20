@@ -17,6 +17,7 @@
         </div>
         <div class="card-body" id="pageDetails">
           @include('objects._details')
+          @include('objects._comments')
         </div>
         <div class="card-footer d-flex flex-wrap gap-2">
           <a href="{{ route('objects.index') }}" class="btn btn-outline-secondary">

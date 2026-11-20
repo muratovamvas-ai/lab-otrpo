@@ -67,6 +67,19 @@
   background-color: #dc3545;
 }
 
+// Комментарии: комментарии друзей подсвечиваются цветом и значком
+.comment {
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  border-left: 4px solid $border-gray;
+  background-color: #f8fafc;
+
+  &.comment-friend {
+    border-left-color: #f59e0b;
+    background-color: #fff8e1;
+  }
+}
+
 // Каждой карточке — свой цвет из ЛР1 (5 цветов повторяются по кругу)
 @each $num, $color in $card-colors {
   .row > div:nth-child(5n + #{$num}) .object-card {

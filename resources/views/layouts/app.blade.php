@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>@yield('title', 'Каталог Мессье') — Муратова, Лабораторная 4</title>
+  <title>@yield('title', 'Каталог Мессье') — Муратова, Лабораторная 5</title>
 
   {{-- Собранные Laravel Mix файлы (public/css, public/js). ?v= сбрасывает кеш браузера после пересборки --}}
   @php
@@ -37,6 +37,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">Пользователи</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('feed') ? 'active' : '' }}" href="{{ route('feed') }}">Лента друзей</a>
             </li>
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('users.objects') && request()->route('user')?->is(auth()->user()) ? 'active' : '' }}"
@@ -75,10 +78,17 @@
       </div>
     @endif
 
+    @if (session('error'))
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+      </div>
+    @endif
+
     @yield('content')
 
     <footer class="footer text-center mt-4 pt-3">
-      <p class="mb-0">Муратова — Лабораторная работа №4</p>
+      <p class="mb-0">Муратова — Лабораторная работа №5</p>
     </footer>
   </div>
 

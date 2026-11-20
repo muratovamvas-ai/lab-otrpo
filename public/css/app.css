@@ -21297,6 +21297,17 @@ readers do not read off random characters that represent icons */
   background-color: #dc3545;
 }
 
+.comment {
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  border-left: 4px solid #cbd5e1;
+  background-color: #f8fafc;
+}
+.comment.comment-friend {
+  border-left-color: #f59e0b;
+  background-color: #fff8e1;
+}
+
 .row > div:nth-child(5n+1) .object-card {
   background-color: #d5d8e9;
 }

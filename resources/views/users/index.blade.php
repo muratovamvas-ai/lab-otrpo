@@ -13,6 +13,7 @@
             <th>Логин</th>
             <th>Имя</th>
             <th class="text-center">Объектов</th>
+            <th>Дружба</th>
             <th></th>
           </tr>
         </thead>
@@ -30,6 +31,25 @@
               </td>
               <td>{{ $user->name }}</td>
               <td class="text-center">{{ $user->messier_objects_count }}</td>
+              <td>
+                @unless ($user->is(auth()->user()))
+                  @if (in_array($user->id, $friendIds))
+                    <span class="badge text-bg-success"><i class="fa-solid fa-user-group"></i> друг</span>
+                    <form action="{{ route('friends.destroy', $user) }}" method="POST" class="d-inline">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-outline-danger btn-sm">Убрать из друзей</button>
+                    </form>
+                  @else
+                    <form action="{{ route('friends.store', $user) }}" method="POST" class="d-inline">
+                      @csrf
+                      <button type="submit" class="btn btn-outline-success btn-sm">
+                        <i class="fa-solid fa-user-plus"></i> Добавить в друзья
+                      </button>
+                    </form>
+                  @endif
+                @endunless
+              </td>
               <td class="text-end">
                 <a href="{{ route('users.objects', $user) }}" class="btn btn-outline-primary btn-sm">Объекты</a>
               </td>
